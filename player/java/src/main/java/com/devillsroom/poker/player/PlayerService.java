@@ -14,6 +14,7 @@ import java.net.UnknownHostException;
 
 public class PlayerService implements Runnable {
 
+    private final Strategy strategy;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private String name;
@@ -21,21 +22,22 @@ public class PlayerService implements Runnable {
 
     public static void main(String[] args) {
 
-        new PlayerService("Jim Java", 9900).run();
+        new PlayerService("Jim Java", 9900, new SimpleStrategy()).run();
 
     }
 
-    public PlayerService(String name, int port) {
+    public PlayerService(String name, int port, Strategy strategy) {
 
         this.name = name;
         this.port = port;
+        this.strategy = strategy;
 
     }
 
     @Override
     public void run() {
 
-        PlayerStrategyHandler handler = new PlayerStrategyHandler(name);
+        PlayerStrategyHandler handler = new PlayerStrategyHandler(name, strategy);
         PlayerStrategy.Processor <PlayerStrategyHandler> processor = new PlayerStrategy.Processor<>(handler);
 
         try {

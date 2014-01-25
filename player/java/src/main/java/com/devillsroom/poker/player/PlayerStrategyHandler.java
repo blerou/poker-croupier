@@ -5,6 +5,7 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class PlayerStrategyHandler implements PlayerStrategy.Iface {
@@ -13,8 +14,12 @@ public class PlayerStrategyHandler implements PlayerStrategy.Iface {
 
     public String name;
 
-    public PlayerStrategyHandler(String name) {
+    private Game game;
+    private Strategy strategy;
+
+    public PlayerStrategyHandler(String name, Strategy strategy) {
         this.name = name;
+        this.strategy = strategy;
     }
 
     @Override
@@ -26,12 +31,16 @@ public class PlayerStrategyHandler implements PlayerStrategy.Iface {
     public long bet_request(long pot, BetLimits limits) throws TException {
         logger.debug(name + " bet_request pot : " + pot + " minimum raise: " + limits.getMinimum_raise() + " to call : " + limits.getTo_call());
 
-        return 0;
+        game.setPot(pot);
+        return strategy.doBet(limits, game);
     }
 
     @Override
     public void competitor_status(Competitor competitor) throws TException {
         logger.debug(name + " competitor_status Name : " + competitor.name + " Stack " + competitor.getStack());
+
+        game = new Game();
+
     }
 
     @Override
@@ -44,11 +53,15 @@ public class PlayerStrategyHandler implements PlayerStrategy.Iface {
     public void hole_card(Card card) throws TException {
         logger.debug(name + " hole_card Name : " + card.getName() + " Suite : " + card.getSuit() );
 
+        game.addHoleCard(card);
+
     }
 
     @Override
     public void community_card(Card card) throws TException {
         logger.debug(name + " community_card Name : " + card.getName() + " Suite : " + card.getSuit());
+
+        game.addCommunityCard(card);
 
     }
 
@@ -69,4 +82,5 @@ public class PlayerStrategyHandler implements PlayerStrategy.Iface {
         logger.debug(name + " shutdown");
 
     }
+
 }
