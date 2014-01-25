@@ -1,23 +1,23 @@
 #!/usr/bin/env python
- 
+
 import sys, os
 sys.path.append(os.path.abspath('lib/api'))
 
 from player_strategy import PlayerStrategy
 from player_strategy.ttypes import *
-   
+
 from thrift.transport import TSocket
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol
 from thrift.server import TServer
-    
+
 import socket
 
 from lib.handler import PlayerHandler
 
 handler = PlayerHandler()
 processor = PlayerStrategy.Processor(handler)
-transport = TSocket.TServerSocket('localhost', 30303)
+transport = TSocket.TServerSocket('0.0.0.0', sys.argv[1])
 tfactory = TTransport.TBufferedTransportFactory()
 pfactory = TBinaryProtocol.TBinaryProtocolFactory()
 
