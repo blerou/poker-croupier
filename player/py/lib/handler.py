@@ -17,11 +17,12 @@ class PlayerHandler(object):
     self.bet_log = BetLog()
     self.rais = 0
 
+class PlayerHandler(object):
   def __init__(self):
-
     self.__reset__()
     self.money = 1000
     self.rais = 0
+    self.bet_log = BetLog()
 
   def name(self):
     return os.environ['USER'] + '_' + sys.argv[1]
@@ -57,6 +58,16 @@ class PlayerHandler(object):
         return limits.to_call
 
     self.rais = 0;
+    self.bet_log.bet(bet)
+    #if self.__state__() == 2 and self.__eval__() > 24:
+    pass
+
+  def bet_request(self, pot, limits):
+    try:
+        return self.bet_log.bet_request(limits)
+    except:
+        return 0
+
     if self.__state__() == 2:
       if self.__eval__() > 20 or self._get_deal() > Evaluator.NOTHING:
         return limits.to_call * 2
