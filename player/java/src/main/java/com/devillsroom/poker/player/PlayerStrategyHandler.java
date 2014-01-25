@@ -47,7 +47,9 @@ public class PlayerStrategyHandler implements PlayerStrategy.Iface {
         logger.debug(name + " bet Competitor : " + competitor.getName() + " bet:" + bet.getAmount());
 
         if (!competitor.getName().equals(name)) {
-            game.addBet(competitor, bet);
+            game.addBetByOthers(competitor, bet);
+        } else {
+            strategy.addBet(bet.getAmount());
         }
     }
 
@@ -56,6 +58,7 @@ public class PlayerStrategyHandler implements PlayerStrategy.Iface {
         logger.debug(name + " hole_card Name : " + card.getName() + " Suite : " + card.getSuit() );
 
         game.addHoleCard(card);
+        strategy.resetMyBets();
 
     }
 
@@ -65,6 +68,8 @@ public class PlayerStrategyHandler implements PlayerStrategy.Iface {
 
         game.addCommunityCard(card);
         game.resetBets();
+        strategy.resetMyBets();
+
     }
 
     @Override

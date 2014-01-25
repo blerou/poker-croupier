@@ -11,6 +11,7 @@ public class Game {
 
     private Hand hand = new Hand();
     private long pot;
+    private long bigBlind = 0;
 
     private Map<Competitor, Bet> bets = new HashMap<>();
 
@@ -34,7 +35,15 @@ public class Game {
         return getHand().getCards().size() <= 2;
     }
 
-    public void addBet(Competitor competitor, Bet bet) {
+
+    public long getBigBlind() {
+        return bigBlind;
+    }
+
+    public void addBetByOthers(Competitor competitor, Bet bet) {
+        if(bigBlind == 0) {
+            bigBlind = 2 * bet.getAmount();
+        }
         bets.put(competitor, bet);
     }
 

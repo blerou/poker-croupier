@@ -6,6 +6,7 @@ public abstract class Strategy {
 
     public abstract long doBet(BetLimits limits, Game game);
 
+    protected long myBets = 0;
 
     protected long doCall(BetLimits limits) {
         return limits.getTo_call();
@@ -15,9 +16,21 @@ public abstract class Strategy {
         return limits.getTo_call() + limits.getMinimum_raise();
     }
 
-    protected long doCheckOfFold() {
+    protected long doRaise(BetLimits limits, int multiplier) {
+        return limits.getTo_call() + (multiplier * limits.getMinimum_raise());
+    }
+
+
+    protected long doCheckOrFold() {
         return 0;
     }
 
 
+    public void resetMyBets() {
+        myBets = 0;
+    }
+
+    public void addBet(long amount) {
+        myBets += amount;
+    }
 }

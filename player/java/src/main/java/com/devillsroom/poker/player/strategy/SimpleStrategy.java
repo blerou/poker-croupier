@@ -21,7 +21,7 @@ public class SimpleStrategy extends Strategy {
         } else if (game.getHand().hasExactlyOnePair()) {
             return doCall(limits);
         } else {
-            return doCheckOfFold();
+            return doCheckOrFold();
         }
     }
 
@@ -30,7 +30,7 @@ public class SimpleStrategy extends Strategy {
         if (game.getHand().hasAtLeastPair() || game.getHand().hasTwoHighCardOutOfTwoCard()) {
             return doRaise(limits);
         } else {
-            return doCheckOfFold();
+            return doCheckOrFold();
         }
     }
 }

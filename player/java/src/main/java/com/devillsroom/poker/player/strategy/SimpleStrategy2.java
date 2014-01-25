@@ -30,7 +30,7 @@ public class SimpleStrategy2 extends Strategy {
             return doCall(limits);
 
         } else {
-            return doCheckOfFold();
+            return doCheckOrFold();
 
         }
 
@@ -43,7 +43,7 @@ public class SimpleStrategy2 extends Strategy {
 
         } else {
 
-            return doCheckOfFold();
+            return doCheckOrFold();
 
         }
 

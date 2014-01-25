@@ -9,15 +9,19 @@ public class SimpleStrategy3 extends Strategy {
     @Override
     public long doBet(BetLimits limits, Game game) {
 
+        long betAmount;
+
         if (game.isPreFlop()) {
 
-            return doPreFlopBet(limits, game);
+            betAmount = doPreFlopBet(limits, game);
 
         } else {
 
-            return doPostFlopBet(limits, game);
+            betAmount = doPostFlopBet(limits, game);
 
         }
+
+        return betAmount;
 
     }
 
@@ -30,20 +34,31 @@ public class SimpleStrategy3 extends Strategy {
             return doCall(limits);
 
         } else {
-            return doCheckOfFold();
+            return doCheckOrFold();
 
         }
 
     }
 
+    private long handleMaximumCallOrFold(BetLimits limits, Game game) {
+        if(myBets + doCall(limits) > game.getBigBlind()){
+            return doCheckOrFold();
+        } else {
+            return doCall(limits);
+        }
+    }
+
     private long doPreFlopBet(BetLimits limits, Game game) {
 
-        if (game.getHand().hasAtLeastPair() || game.getHand().hasTwoHighCardOutOfTwoCard()) {
-            return doRaise(limits);
-
+        if (game.getHand().hasAtLeastPair() && game.getHand().hasTwoHighCardOutOfTwoCard()) {
+            return doRaise(limits, 8);
+        } else if (game.getHand().hasAtLeastPair() ) {
+            return doRaise(limits, 4);
+        } else if (game.getHand().hasTwoHighCardOutOfTwoCard()) {
+            return doRaise(limits, 2);
         } else {
 
-            return doCheckOfFold();
+            return handleMaximumCallOrFold(limits, game);
 
         }
 
