@@ -5,12 +5,13 @@ sys.path.append(os.path.abspath('lib'))
 
 from api.ThriftTypes.ttypes import BetType
 
-class PlayerHandler:
+from betlog import BetLog
 
+class PlayerHandler(object):
   def __init__(self):
-
     self.__reset__()
     self.money = 1000
+    self.bet_log = BetLog()
 
   def name(self):
     return os.environ['USER']
@@ -26,10 +27,16 @@ class PlayerHandler:
     self.community_cards.append(card)
 
   def bet(self, competitor, bet):
+    self.bet_log.bet(bet)
     #if self.__state__() == 2 and self.__eval__() > 24:
     pass
 
   def bet_request(self, pot, limits):
+    try:
+        return self.bet_log.bet_request(limits)
+    except:
+        return 0
+
     if self.__state__() == 2:
       if self.__eval__() > 20:
         return limits.to_call * 2
@@ -53,9 +60,6 @@ class PlayerHandler:
 
   def shutdown(self):
       sys.exit('Shutting down server')
-<<<<<<< HEAD
-=======
-
 
   def __state__(self):
     return len(self.my_cards) + len(self.community_cards)
@@ -79,4 +83,3 @@ class PlayerHandler:
     if self.community_cards[0].value == self.community_cards[2].value:
       value += self.community_cards[0].value * 2
     return value
->>>>>>> .
