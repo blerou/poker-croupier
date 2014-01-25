@@ -5,7 +5,6 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class PlayerStrategyHandler implements PlayerStrategy.Iface {
@@ -47,6 +46,9 @@ public class PlayerStrategyHandler implements PlayerStrategy.Iface {
     public void bet(Competitor competitor, Bet bet) throws TException {
         logger.debug(name + " bet Competitor : " + competitor.getName() + " bet:" + bet.getAmount());
 
+        if (!competitor.getName().equals(name)) {
+            game.addBet(competitor, bet);
+        }
     }
 
     @Override
@@ -62,7 +64,7 @@ public class PlayerStrategyHandler implements PlayerStrategy.Iface {
         logger.debug(name + " community_card Name : " + card.getName() + " Suite : " + card.getSuit());
 
         game.addCommunityCard(card);
-
+        game.resetBets();
     }
 
     @Override
