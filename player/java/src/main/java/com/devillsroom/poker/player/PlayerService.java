@@ -18,24 +18,25 @@ public class PlayerService implements Runnable {
 
     private String name;
     private int port;
+    private Player player;
 
     public static void main(String[] args) {
 
-        new PlayerService("Jim Java", 9900).run();
+        new PlayerService("Jim Java", 9900, new DummyPlayer()).run();
 
     }
 
-    public PlayerService(String name, int port) {
+    public PlayerService(String name, int port, Player player) {
 
         this.name = name;
         this.port = port;
-
+        this.player = player;
     }
 
     @Override
     public void run() {
 
-        PlayerStrategyHandler handler = new PlayerStrategyHandler(name);
+        PlayerStrategyHandler handler = new PlayerStrategyHandler(name, player);
         PlayerStrategy.Processor <PlayerStrategyHandler> processor = new PlayerStrategy.Processor<>(handler);
 
         try {

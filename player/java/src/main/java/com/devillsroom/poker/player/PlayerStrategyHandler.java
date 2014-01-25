@@ -13,8 +13,11 @@ public class PlayerStrategyHandler implements PlayerStrategy.Iface {
 
     public String name;
 
-    public PlayerStrategyHandler(String name) {
+    private Player p;
+
+    public PlayerStrategyHandler(String name, Player player) {
         this.name = name;
+        p = player;
     }
 
     @Override
@@ -26,7 +29,7 @@ public class PlayerStrategyHandler implements PlayerStrategy.Iface {
     public long bet_request(long pot, BetLimits limits) throws TException {
         logger.debug(name + " bet_request pot : " + pot + " minimum raise: " + limits.getMinimum_raise() + " to call : " + limits.getTo_call());
 
-        return 0;
+        return p.doBet(pot, limits.getTo_call(), limits.getMinimum_raise());
     }
 
     @Override
@@ -38,22 +41,25 @@ public class PlayerStrategyHandler implements PlayerStrategy.Iface {
     public void bet(Competitor competitor, Bet bet) throws TException {
         logger.debug(name + " bet Competitor : " + competitor.getName() + " bet:" + bet.getAmount());
 
+
     }
 
     @Override
-    public void hole_card(Card card) throws TException {
+    public void hole_card(com.devillsroom.poker.client.Card card) throws TException {
         logger.debug(name + " hole_card Name : " + card.getName() + " Suite : " + card.getSuit() );
 
+        p.addCard(card.getSuit().getValue(), card.getValue());
     }
 
     @Override
-    public void community_card(Card card) throws TException {
+    public void community_card(com.devillsroom.poker.client.Card card) throws TException {
         logger.debug(name + " community_card Name : " + card.getName() + " Suite : " + card.getSuit());
 
+        p.addCard(card.getSuit().getValue(), card.getValue());
     }
 
     @Override
-    public void showdown(Competitor competitor, List<Card> cards, HandDescriptor hand) throws TException {
+    public void showdown(Competitor competitor, List<com.devillsroom.poker.client.Card> cards, HandDescriptor hand) throws TException {
         logger.debug(name + " showdown");
 
     }
