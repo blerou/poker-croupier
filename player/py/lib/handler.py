@@ -19,7 +19,10 @@ class PlayerHandler:
     pass
 
   def bet_request(self, pot, limits):
-    return 0
+    try:
+        return limits["to_call"]
+    except:
+        return 0
 
   def showdown(self, comptetior, cards, hand):
     pass
