@@ -76,11 +76,11 @@ class PlayerHandler(object):
     return 0
 
   def showdown(self, comptetior, cards, hand):
+    print "showdown", comptetior, cards, hand
     pass
 
   def winner(self, competitor, amount):
     self.__reset__()
-
 
   def shutdown(self):
       sys.exit('Shutting down server')
