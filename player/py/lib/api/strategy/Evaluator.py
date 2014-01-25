@@ -4,9 +4,13 @@ class Evaluator:
   PAIR        = 1
   DOUBLE_PAIR = 2
   DRILL       = 3
+  STRAIGHT    = 4
 
   def evaluate(self, deal):
     numpairs = self._number_of_pairs(deal)
+
+    if self._has_straight(deal):
+      return Evaluator.STRAIGHT
 
     if self._has_drill(deal):
       return Evaluator.DRILL
@@ -36,6 +40,27 @@ class Evaluator:
       if value_cat[value] > 2:
         return True
     return False
+
+  def _has_straight(self, deal):
+    values = self._value_categories(deal).keys()
+
+    if len(values) < 5:
+      return False
+
+    sorted_values = sorted(values)
+    last_value = sorted_values[0]
+    del sorted_values[0]
+
+    while len(sorted_values) > 0:
+      value = sorted_values[0]
+      del sorted_values[0]
+
+      if value != last_value + 1:
+        return False
+
+      last_value = value
+
+    return True
 
   def _value_categories(self, deal):
     value_cat = {}
