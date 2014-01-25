@@ -6,6 +6,7 @@ sys.path.append(os.path.abspath('lib'))
 from api.ThriftTypes.ttypes import BetType
 
 from betlog import BetLog
+from twocards import TwoCardsEvaluator
 
 class PlayerHandler(object):
   def __init__(self):
@@ -22,6 +23,7 @@ class PlayerHandler(object):
 
   def hole_card(self, card):
     self.my_cards.append(card)
+    self.twocards.card(card)
 
   def community_card(self, card):
     self.community_cards.append(card)
@@ -32,9 +34,22 @@ class PlayerHandler(object):
     pass
 
   def bet_request(self, pot, limits):
+    if len(self.community_cards) == 0:
+        niceness = self.twocards.evaluate()
+
+        if niceness > 9:
+            return max(0, self.money - 10)
+
+        if niceness == 3:
+            return limits.minimum_raise
+        if niceness == 0:
+            return 0
+
+        return limits.to_call
+
     try:
         return self.bet_log.bet_request(limits)
-    except:
+    except Exception as e:
         return 0
 
     if self.__state__() == 2:
@@ -67,6 +82,7 @@ class PlayerHandler(object):
   def __reset__(self):
     self.my_cards = []
     self.community_cards = []
+    self.twocards = TwoCardsEvaluator()
 
   def __eval_hand__(self):
     value =  self.my_cards[0].value + self.my_cards[1].value
