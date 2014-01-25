@@ -74,7 +74,10 @@ public class Hand {
     }
 
     public boolean hasAtLeastDrill() {
+
         int[] values = evaluateValues();
+
+
         int pairCount = 0;
         for (int i = 2; i < values.length; i++) {
             if (values[i] > 2) {
@@ -104,5 +107,25 @@ public class Hand {
             suites[card.getSuit().getValue()]++;
         }
         return suites;
+    }
+
+    public boolean hasStraight() {
+        int[] values = evaluateValues();
+
+        int straightCounter = 0;
+        for(int i = 1; i < values.length; i++) {
+
+            if(values[i] > 0){
+                straightCounter++;
+                if(straightCounter == 5) {
+                    return true;
+                }
+            } else {
+                straightCounter = 0;
+            }
+
+        }
+
+        return false;
     }
 }

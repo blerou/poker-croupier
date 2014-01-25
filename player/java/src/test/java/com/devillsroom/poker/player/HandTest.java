@@ -8,6 +8,42 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class HandTest {
+
+    @Test
+    public void testHasNoStraight() {
+
+        Hand hand = new Hand();
+        hand.addCard(new Card((short)11, Suit.Diamonds, ""));
+        hand.addCard(new Card((short)14, Suit.Diamonds, ""));
+        hand.addCard(new Card((short)11, Suit.Diamonds, ""));
+        hand.addCard(new Card((short)14, Suit.Diamonds, ""));
+        hand.addCard(new Card((short)14, Suit.Diamonds, ""));
+
+        assertFalse(hand.hasStraight());
+    }
+
+    @Test
+    public void testHasStraight() {
+
+        Hand hand = new Hand();
+        hand.addCard(new Card((short)5, Suit.Diamonds, ""));
+        hand.addCard(new Card((short)6, Suit.Diamonds, ""));
+        hand.addCard(new Card((short)7, Suit.Diamonds, ""));
+        hand.addCard(new Card((short)8, Suit.Diamonds, ""));
+        hand.addCard(new Card((short)9, Suit.Diamonds, ""));
+
+        assertTrue(hand.hasStraight());
+
+        hand = new Hand();
+        hand.addCard(new Card((short)10, Suit.Diamonds, ""));
+        hand.addCard(new Card((short)11, Suit.Diamonds, ""));
+        hand.addCard(new Card((short)12, Suit.Diamonds, ""));
+        hand.addCard(new Card((short)13, Suit.Diamonds, ""));
+        hand.addCard(new Card((short)14, Suit.Diamonds, ""));
+
+        assertTrue(hand.hasStraight());
+    }
+
     @Test
     public void testHasTwoHighCardOutOfTwoCard() throws Exception {
         Hand hand = new Hand();

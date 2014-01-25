@@ -23,7 +23,7 @@ public class SimpleStrategy2 extends Strategy {
 
     private long doPostFlopBet(BetLimits limits, Game game) {
 
-        if (game.getHand().hasAtLeastDrill() || game.getHand().hasFlush()) {
+        if (game.getHand().hasAtLeastDrill() || game.getHand().hasFlush() || game.getHand().hasStraight()) {
             return doRaise(limits);
 
         } else if (game.getHand().hasExactlyOnePair()) {
