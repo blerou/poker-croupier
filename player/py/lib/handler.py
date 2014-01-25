@@ -1,6 +1,8 @@
 import sys
 import os
 
+from strategy import Evaluator
+
 sys.path.append(os.path.abspath('lib'))
 
 from api.ThriftTypes.ttypes import BetType
@@ -56,30 +58,33 @@ class PlayerHandler(object):
 
     self.rais = 0;
     if self.__state__() == 2:
-      if self.__eval__() > 20:
+      if self.__eval__() > 20 or self._get_deal() > Evaluator.NOTHING:
         return limits.to_call * 2
       else:
         return 0
 
     if self.__state__() == 5:
-      if self.__eval__() > 30:
+      if self.__eval__() > 30 or self._get_deal() > Evaluator.NOTHING:
         return limits.to_call
       else:
         return limits.to_call
 
     if self.__state__() == 6:
-      if self.__eval__() > 35:
+      if self.__eval__() > 35 or self._get_deal() > Evaluator.NOTHING:
         return limits.to_call
       else:
         return limits.to_call
 
     if self.__state__() == 7:
-      if self.__eval__() > 40:
+      if self.__eval__() > 40 or self._get_deal() > Evaluator.NOTHING:
         return limits.to_call
       else:
         return limits.to_call
 
     return 0
+
+  def _get_deal(self):
+    return Evaluator().evaluate(self.my_cards + self.community_cards)
 
   def showdown(self, comptetior, cards, hand):
     pass
