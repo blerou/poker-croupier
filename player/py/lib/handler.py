@@ -13,9 +13,10 @@ class PlayerHandler(object):
     self.__reset__()
     self.money = 1000
     self.bet_log = BetLog()
+    self.rais = 0
 
   def name(self):
-    return os.environ['USER']
+    return os.environ['USER'] + '_' + sys.argv[1]
 
   def competitor_status(self, competitor):
     if len(self.my_cards) == 0 and competitor.name == self.name():
@@ -41,17 +42,13 @@ class PlayerHandler(object):
             return max(0, self.money - 10)
 
         if niceness == 3:
-            return limits.minimum_raise
+            return limits.minimum_raise + limits.to_call
         if niceness == 0:
             return 0
 
         return limits.to_call
 
-    try:
-        return self.bet_log.bet_request(limits)
-    except Exception as e:
-        return 0
-
+    self.rais = 0;
     if self.__state__() == 2:
       if self.__eval__() > 20:
         return limits.to_call * 2
@@ -62,9 +59,21 @@ class PlayerHandler(object):
       if self.__eval__() > 30:
         return limits.to_call
       else:
-        return 0
+        return limits.to_call
 
-    return limits.to_call;
+    if self.__state__() == 6:
+      if self.__eval__() > 35:
+        return limits.to_call
+      else:
+        return limits.to_call
+
+    if self.__state__() == 7:
+      if self.__eval__() > 40:
+        return limits.to_call
+      else:
+        return limits.to_call
+
+    return 0
 
   def showdown(self, comptetior, cards, hand):
     pass
@@ -92,10 +101,11 @@ class PlayerHandler(object):
 
   def __eval__(self):
     value = self.__eval_hand__()
-    if self.community_cards[0].value == self.community_cards[1].value:
-      value += self.community_cards[0].value * 2
-    if self.community_cards[1].value == self.community_cards[2].value:
-      value += self.community_cards[1].value * 2
-    if self.community_cards[0].value == self.community_cards[2].value:
-      value += self.community_cards[0].value * 2
+    if self.__state__() > 2:
+      if self.community_cards[0].value == self.community_cards[1].value:
+        value += self.community_cards[0].value * 2
+      if self.community_cards[1].value == self.community_cards[2].value:
+        value += self.community_cards[1].value * 2
+      if self.community_cards[0].value == self.community_cards[2].value:
+        value += self.community_cards[0].value * 2
     return value
