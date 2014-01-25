@@ -1,9 +1,11 @@
 import sys
 import os
 
-from strategy import Evaluator
 
 sys.path.append(os.path.abspath('lib'))
+
+from api.strategy import Evaluator
+
 
 from api.ThriftTypes.ttypes import BetType
 
@@ -41,7 +43,7 @@ class PlayerHandler(object):
         niceness = self.twocards.evaluate()
 
         if niceness > 9:
-            return max(0, self.money - 10)
+            return max(0, self.money)
 
         if niceness == 3:
             return limits.minimum_raise + limits.to_call
