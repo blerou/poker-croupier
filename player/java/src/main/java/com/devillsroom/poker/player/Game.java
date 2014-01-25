@@ -23,4 +23,11 @@ public class Game {
     public Hand getHand() {
         return hand;
     }
+
+    public boolean isPreFlop() {
+        return getHand().getCards().size() <= 2;
+    }
+
+
+
 }

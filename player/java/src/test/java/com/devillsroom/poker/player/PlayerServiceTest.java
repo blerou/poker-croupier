@@ -12,8 +12,8 @@ public class PlayerServiceTest {
         startPlayerThread("Java Player 1", 9200, new SimpleStrategy());
         startPlayerThread("Java Player 2", 9201, new SimpleStrategy());
 
-        //System.out.println(execCmd("bundle exec ruby ../../croupier/scripts/integration_test_external_players.rb"));
-        execCmd("bundle exec ruby ../../croupier/scripts/integration_test_external_players.rb");
+        System.out.println(execCmd("bundle exec ruby ../../croupier/scripts/integration_test_external_players.rb"));
+        //execCmd("bundle exec ruby ../../croupier/scripts/integration_test_external_players.rb");
     }
 
     public static String execCmd(String cmd) throws java.io.IOException {

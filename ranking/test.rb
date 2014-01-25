@@ -3,7 +3,7 @@ $:.push('lib/api')
 require 'thrift'
 require 'ranking'
 
-transport = Thrift::BufferedTransport.new(Thrift::Socket.new('localhost', 9080))
+transport = Thrift::Socket.new('localhost', 9080)
 protocol = Thrift::BinaryProtocol.new(transport)
 client = API::Ranking::Client.new(protocol)
 
