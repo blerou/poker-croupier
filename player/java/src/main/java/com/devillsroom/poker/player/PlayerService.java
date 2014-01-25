@@ -27,7 +27,6 @@ public class PlayerService implements Runnable {
     }
 
     public PlayerService(String name, int port, Player player) {
-
         this.name = name;
         this.port = port;
         this.player = player;

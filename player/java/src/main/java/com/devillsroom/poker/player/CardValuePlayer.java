@@ -9,10 +9,10 @@ public class CardValuePlayer implements Player {
     @Override
     public long doBet(long pot, long to_call, long minimum_raise) {
         double d = actualValue() / totalValue();
-        if (Math.random() > d) {
-            return pot > minimum_raise + to_call ? pot : minimum_raise + to_call;
+        if (d > 0.75) {
+            return (long) ((minimum_raise + to_call) + pot * Math.random());
         } else if (d > 0.5) {
-            return (long) ((minimum_raise + to_call) * 5 * d);
+            return (long) ((minimum_raise + to_call) +  100 * d);
         }
         return 0;
     }
