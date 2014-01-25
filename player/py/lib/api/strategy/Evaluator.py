@@ -32,18 +32,18 @@ class Evaluator:
   def _has_drill(self, deal):
     value_cat = self._value_categories(deal)
 
-    for k in value_cat:
-      if value_cat[k] > 2:
+    for value in value_cat:
+      if value_cat[value] > 2:
         return True
     return False
 
   def _value_categories(self, deal):
     value_cat = {}
 
-    for v in deal:
-      if not value_cat.has_key(v[0]):
-        value_cat[v[0]] = 0
-      value_cat[v[0]] = value_cat[v[0]] + 1
+    for card in deal:
+      if not value_cat.has_key(card.value):
+        value_cat[card.value] = 0
+      value_cat[card.value] = value_cat[card.value] + 1
 
     return value_cat
 
