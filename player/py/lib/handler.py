@@ -1,9 +1,10 @@
 import sys
+import os
 
 class PlayerHandler:
 
   def name(self):
-    return "Peter Python"
+    return os.environ['USER']
 
   def competitor_status(self, competitor):
     pass
