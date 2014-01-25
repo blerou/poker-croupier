@@ -12,31 +12,17 @@ module API
     class Client
       include ::Thrift::Client
 
-      def register_player(host, port)
-        send_register_player(host, port)
+      def register_player(address)
+        send_register_player(address)
         recv_register_player()
       end
 
-      def send_register_player(host, port)
-        send_message('register_player', Register_player_args, :host => host, :port => port)
+      def send_register_player(address)
+        send_message('register_player', Register_player_args, :address => address)
       end
 
       def recv_register_player()
         result = receive_message(Register_player_result)
-        return
-      end
-
-      def register_spectator(host, port)
-        send_register_spectator(host, port)
-        recv_register_spectator()
-      end
-
-      def send_register_spectator(host, port)
-        send_message('register_spectator', Register_spectator_args, :host => host, :port => port)
-      end
-
-      def recv_register_spectator()
-        result = receive_message(Register_spectator_result)
         return
       end
 
@@ -54,6 +40,13 @@ module API
         return
       end
 
+      def shutdown()
+        send_shutdown()
+      end
+
+      def send_shutdown()
+        send_message('shutdown', Shutdown_args)
+      end
     end
 
     class Processor
@@ -62,15 +55,8 @@ module API
       def process_register_player(seqid, iprot, oprot)
         args = read_args(iprot, Register_player_args)
         result = Register_player_result.new()
-        @handler.register_player(args.host, args.port)
+        @handler.register_player(args.address)
         write_result(result, oprot, 'register_player', seqid)
-      end
-
-      def process_register_spectator(seqid, iprot, oprot)
-        args = read_args(iprot, Register_spectator_args)
-        result = Register_spectator_result.new()
-        @handler.register_spectator(args.host, args.port)
-        write_result(result, oprot, 'register_spectator', seqid)
       end
 
       def process_start_sit_and_go(seqid, iprot, oprot)
@@ -80,18 +66,22 @@ module API
         write_result(result, oprot, 'start_sit_and_go', seqid)
       end
 
+      def process_shutdown(seqid, iprot, oprot)
+        args = read_args(iprot, Shutdown_args)
+        @handler.shutdown()
+        return
+      end
+
     end
 
     # HELPER FUNCTIONS AND STRUCTURES
 
     class Register_player_args
       include ::Thrift::Struct, ::Thrift::Struct_Union
-      HOST = 1
-      PORT = 2
+      ADDRESS = 1
 
       FIELDS = {
-        HOST => {:type => ::Thrift::Types::STRING, :name => 'host'},
-        PORT => {:type => ::Thrift::Types::I16, :name => 'port'}
+        ADDRESS => {:type => ::Thrift::Types::STRING, :name => 'address'}
       }
 
       def struct_fields; FIELDS; end
@@ -103,39 +93,6 @@ module API
     end
 
     class Register_player_result
-      include ::Thrift::Struct, ::Thrift::Struct_Union
-
-      FIELDS = {
-
-      }
-
-      def struct_fields; FIELDS; end
-
-      def validate
-      end
-
-      ::Thrift::Struct.generate_accessors self
-    end
-
-    class Register_spectator_args
-      include ::Thrift::Struct, ::Thrift::Struct_Union
-      HOST = 1
-      PORT = 2
-
-      FIELDS = {
-        HOST => {:type => ::Thrift::Types::STRING, :name => 'host'},
-        PORT => {:type => ::Thrift::Types::I16, :name => 'port'}
-      }
-
-      def struct_fields; FIELDS; end
-
-      def validate
-      end
-
-      ::Thrift::Struct.generate_accessors self
-    end
-
-    class Register_spectator_result
       include ::Thrift::Struct, ::Thrift::Struct_Union
 
       FIELDS = {
@@ -166,6 +123,36 @@ module API
     end
 
     class Start_sit_and_go_result
+      include ::Thrift::Struct, ::Thrift::Struct_Union
+
+      FIELDS = {
+
+      }
+
+      def struct_fields; FIELDS; end
+
+      def validate
+      end
+
+      ::Thrift::Struct.generate_accessors self
+    end
+
+    class Shutdown_args
+      include ::Thrift::Struct, ::Thrift::Struct_Union
+
+      FIELDS = {
+
+      }
+
+      def struct_fields; FIELDS; end
+
+      def validate
+      end
+
+      ::Thrift::Struct.generate_accessors self
+    end
+
+    class Shutdown_result
       include ::Thrift::Struct, ::Thrift::Struct_Union
 
       FIELDS = {

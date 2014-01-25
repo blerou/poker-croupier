@@ -22,8 +22,9 @@ module API
     Call = 2
     Blind = 3
     Raise = 4
-    VALUE_MAP = {0 => "Fold", 1 => "Check", 2 => "Call", 3 => "Blind", 4 => "Raise"}
-    VALID_VALUES = Set.new([Fold, Check, Call, Blind, Raise]).freeze
+    Allin = 5
+    VALUE_MAP = {0 => "Fold", 1 => "Check", 2 => "Call", 3 => "Blind", 4 => "Raise", 5 => "Allin"}
+    VALID_VALUES = Set.new([Fold, Check, Call, Blind, Raise, Allin]).freeze
   end
 
   class Competitor
@@ -71,10 +72,12 @@ module API
     include ::Thrift::Struct, ::Thrift::Struct_Union
     AMOUNT = 1
     TYPE = 2
+    NEW_POT_SIZE = 3
 
     FIELDS = {
       AMOUNT => {:type => ::Thrift::Types::I64, :name => 'amount'},
-      TYPE => {:type => ::Thrift::Types::I32, :name => 'type', :enum_class => ::API::BetType}
+      TYPE => {:type => ::Thrift::Types::I32, :name => 'type', :enum_class => ::API::BetType},
+      NEW_POT_SIZE => {:type => ::Thrift::Types::I64, :name => 'new_pot_size'}
     }
 
     def struct_fields; FIELDS; end
@@ -83,6 +86,42 @@ module API
       unless @type.nil? || ::API::BetType::VALID_VALUES.include?(@type)
         raise ::Thrift::ProtocolException.new(::Thrift::ProtocolException::UNKNOWN, 'Invalid value of field type!')
       end
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
+  class BetLimits
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+    TO_CALL = 1
+    MINIMUM_RAISE = 2
+
+    FIELDS = {
+      TO_CALL => {:type => ::Thrift::Types::I64, :name => 'to_call'},
+      MINIMUM_RAISE => {:type => ::Thrift::Types::I64, :name => 'minimum_raise'}
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
+  class HandDescriptor
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+    NAME = 1
+    RANKS = 2
+
+    FIELDS = {
+      NAME => {:type => ::Thrift::Types::STRING, :name => 'name'},
+      RANKS => {:type => ::Thrift::Types::LIST, :name => 'ranks', :element => {:type => ::Thrift::Types::I16}}
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
     end
 
     ::Thrift::Struct.generate_accessors self

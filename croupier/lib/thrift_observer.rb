@@ -27,4 +27,20 @@ class Croupier::ThriftObserver
   def bet(competitor, bet)
     @strategy.bet(@gateway[competitor], @gateway.bet(bet))
   end
+
+  def community_card(card)
+    @strategy.community_card @gateway[card]
+  end
+
+  def showdown(competitor, hand)
+    @strategy.showdown @gateway[competitor], competitor.hole_cards.map { |card| @gateway[card] }, @gateway[hand]
+  end
+
+  def winner(competitor, amount)
+    @strategy.winner @gateway[competitor], amount
+  end
+
+  def shutdown
+    @strategy.shutdown
+  end
 end

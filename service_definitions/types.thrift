@@ -1,4 +1,10 @@
 namespace rb API
+namespace py ThriftTypes
+namespace php API
+namespace cpp API
+namespace csharp API
+
+namespace java com.devillsroom.poker.client
 
 struct Competitor
 {
@@ -21,6 +27,7 @@ enum BetType
     Call = 2
     Blind = 3
     Raise = 4
+    Allin = 5
 }
 
 struct Card
@@ -34,4 +41,17 @@ struct Bet
 {
     1:i64 amount
     2:BetType type
+    3:i64 new_pot_size
+}
+
+struct BetLimits
+{
+    1:i64 to_call
+    2:i64 minimum_raise
+}
+
+struct HandDescriptor
+{
+    1:string name
+    2:list<i16> ranks
 }

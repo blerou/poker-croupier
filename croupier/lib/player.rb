@@ -1,19 +1,58 @@
-require 'player_strategy'
+class Croupier::Player
+  delegate_all :strategy
 
-class Croupier::Player < Croupier::ThriftObserver
+  attr_accessor :stack
+  attr_reader :hole_cards
 
-  attr_reader :stack
+  attr_accessor :total_bet
+  attr_reader :strategy
 
-  def initialize(strategy, transport)
-    super(strategy, transport)
+  def initialize(strategy)
+    @strategy = strategy
     @stack = 1000
+    @forced_bet = nil
+
+    initialize_round
   end
 
-  def hole_card(card)
-    strategy.hole_card(gateway[card])
+  def initialize_round
+    @active = has_stack?
+    @total_bet = 0
+    @hole_cards = []
   end
 
-  def withdraw(bet)
-    @stack -= bet
+  def has_stack?
+    @stack > 0
+  end
+
+  def deposit(amount)
+    @stack += amount
+  end
+
+  def active?
+    @active
+  end
+
+  def fold
+    @active = false
+  end
+
+  def allin?
+    @stack == 0
+  end
+
+  def force_bet bet
+    @forced_bet = bet
+  end
+
+  def bet_request(pot, limits)
+    bet = @forced_bet || @strategy.bet_request(pot, limits)
+    @forced_bet = nil
+    bet
+  end
+
+  def hole_card card
+    @strategy.hole_card card
+    @hole_cards << card
   end
 end

@@ -27,13 +27,13 @@ module API
         raise ::Thrift::ApplicationException.new(::Thrift::ApplicationException::MISSING_RESULT, 'name failed: unknown result')
       end
 
-      def bet_request()
-        send_bet_request()
+      def bet_request(pot, limits)
+        send_bet_request(pot, limits)
         return recv_bet_request()
       end
 
-      def send_bet_request()
-        send_message('bet_request', Bet_request_args)
+      def send_bet_request(pot, limits)
+        send_message('bet_request', Bet_request_args, :pot => pot, :limits => limits)
       end
 
       def recv_bet_request()
@@ -98,6 +98,41 @@ module API
         return
       end
 
+      def showdown(competitor, cards, hand)
+        send_showdown(competitor, cards, hand)
+        recv_showdown()
+      end
+
+      def send_showdown(competitor, cards, hand)
+        send_message('showdown', Showdown_args, :competitor => competitor, :cards => cards, :hand => hand)
+      end
+
+      def recv_showdown()
+        result = receive_message(Showdown_result)
+        return
+      end
+
+      def winner(competitor, amount)
+        send_winner(competitor, amount)
+        recv_winner()
+      end
+
+      def send_winner(competitor, amount)
+        send_message('winner', Winner_args, :competitor => competitor, :amount => amount)
+      end
+
+      def recv_winner()
+        result = receive_message(Winner_result)
+        return
+      end
+
+      def shutdown()
+        send_shutdown()
+      end
+
+      def send_shutdown()
+        send_message('shutdown', Shutdown_args)
+      end
     end
 
     class Processor
@@ -113,7 +148,7 @@ module API
       def process_bet_request(seqid, iprot, oprot)
         args = read_args(iprot, Bet_request_args)
         result = Bet_request_result.new()
-        result.success = @handler.bet_request()
+        result.success = @handler.bet_request(args.pot, args.limits)
         write_result(result, oprot, 'bet_request', seqid)
       end
 
@@ -143,6 +178,26 @@ module API
         result = Community_card_result.new()
         @handler.community_card(args.card)
         write_result(result, oprot, 'community_card', seqid)
+      end
+
+      def process_showdown(seqid, iprot, oprot)
+        args = read_args(iprot, Showdown_args)
+        result = Showdown_result.new()
+        @handler.showdown(args.competitor, args.cards, args.hand)
+        write_result(result, oprot, 'showdown', seqid)
+      end
+
+      def process_winner(seqid, iprot, oprot)
+        args = read_args(iprot, Winner_args)
+        result = Winner_result.new()
+        @handler.winner(args.competitor, args.amount)
+        write_result(result, oprot, 'winner', seqid)
+      end
+
+      def process_shutdown(seqid, iprot, oprot)
+        args = read_args(iprot, Shutdown_args)
+        @handler.shutdown()
+        return
       end
 
     end
@@ -182,9 +237,12 @@ module API
 
     class Bet_request_args
       include ::Thrift::Struct, ::Thrift::Struct_Union
+      POT = 1
+      LIMITS = 2
 
       FIELDS = {
-
+        POT => {:type => ::Thrift::Types::I64, :name => 'pot'},
+        LIMITS => {:type => ::Thrift::Types::STRUCT, :name => 'limits', :class => ::API::BetLimits}
       }
 
       def struct_fields; FIELDS; end
@@ -323,6 +381,104 @@ module API
     end
 
     class Community_card_result
+      include ::Thrift::Struct, ::Thrift::Struct_Union
+
+      FIELDS = {
+
+      }
+
+      def struct_fields; FIELDS; end
+
+      def validate
+      end
+
+      ::Thrift::Struct.generate_accessors self
+    end
+
+    class Showdown_args
+      include ::Thrift::Struct, ::Thrift::Struct_Union
+      COMPETITOR = 1
+      CARDS = 2
+      HAND = 3
+
+      FIELDS = {
+        COMPETITOR => {:type => ::Thrift::Types::STRUCT, :name => 'competitor', :class => ::API::Competitor},
+        CARDS => {:type => ::Thrift::Types::LIST, :name => 'cards', :element => {:type => ::Thrift::Types::STRUCT, :class => ::API::Card}},
+        HAND => {:type => ::Thrift::Types::STRUCT, :name => 'hand', :class => ::API::HandDescriptor}
+      }
+
+      def struct_fields; FIELDS; end
+
+      def validate
+      end
+
+      ::Thrift::Struct.generate_accessors self
+    end
+
+    class Showdown_result
+      include ::Thrift::Struct, ::Thrift::Struct_Union
+
+      FIELDS = {
+
+      }
+
+      def struct_fields; FIELDS; end
+
+      def validate
+      end
+
+      ::Thrift::Struct.generate_accessors self
+    end
+
+    class Winner_args
+      include ::Thrift::Struct, ::Thrift::Struct_Union
+      COMPETITOR = 1
+      AMOUNT = 2
+
+      FIELDS = {
+        COMPETITOR => {:type => ::Thrift::Types::STRUCT, :name => 'competitor', :class => ::API::Competitor},
+        AMOUNT => {:type => ::Thrift::Types::I64, :name => 'amount'}
+      }
+
+      def struct_fields; FIELDS; end
+
+      def validate
+      end
+
+      ::Thrift::Struct.generate_accessors self
+    end
+
+    class Winner_result
+      include ::Thrift::Struct, ::Thrift::Struct_Union
+
+      FIELDS = {
+
+      }
+
+      def struct_fields; FIELDS; end
+
+      def validate
+      end
+
+      ::Thrift::Struct.generate_accessors self
+    end
+
+    class Shutdown_args
+      include ::Thrift::Struct, ::Thrift::Struct_Union
+
+      FIELDS = {
+
+      }
+
+      def struct_fields; FIELDS; end
+
+      def validate
+      end
+
+      ::Thrift::Struct.generate_accessors self
+    end
+
+    class Shutdown_result
       include ::Thrift::Struct, ::Thrift::Struct_Union
 
       FIELDS = {
