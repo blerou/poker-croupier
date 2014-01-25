@@ -20,5 +20,8 @@ class TestEvaluator(unittest.TestCase):
   def test_straight(self):
     self.assert_result(Evaluator.STRAIGHT, [Card(3, 1), Card(6, 2), Card(6, 3), Card(5, 3), Card(4, 4), Card(7, 2)])
 
+  def test_flush(self):
+    self.assert_result(Evaluator.FLUSH, [Card(3, 1), Card(5, 1), Card(5, 2), Card(6, 1), Card(8, 1), Card(9, 1)])
+
   def assert_result(self, expected, input):
     self.assertEqual(expected, Evaluator().evaluate(input))

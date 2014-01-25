@@ -5,9 +5,13 @@ class Evaluator:
   DOUBLE_PAIR = 2
   DRILL       = 3
   STRAIGHT    = 4
+  FLUSH       = 5
 
   def evaluate(self, deal):
     numpairs = self._number_of_pairs(deal)
+
+    if self._has_flush(deal):
+      return Evaluator.FLUSH
 
     if self._has_straight(deal):
       return Evaluator.STRAIGHT
@@ -62,6 +66,15 @@ class Evaluator:
 
     return True
 
+  def _has_flush(self, deal):
+    suit_cat = self._suit_categories(deal)
+
+    for suit in suit_cat:
+      if suit_cat[suit] > 4:
+        return True
+
+    return False
+
   def _value_categories(self, deal):
     value_cat = {}
 
@@ -71,4 +84,14 @@ class Evaluator:
       value_cat[card.value] = value_cat[card.value] + 1
 
     return value_cat
+
+  def _suit_categories(self, deal):
+    value_suit = {}
+
+    for card in deal:
+      if not value_suit.has_key(card.suit):
+        value_suit[card.suit] = 0
+      value_suit[card.suit] = value_suit[card.suit] + 1
+
+    return value_suit
 
