@@ -1,6 +1,8 @@
-package com.devillsroom.poker.player;
+package com.devillsroom.poker.player.strategy;
 
 import com.devillsroom.poker.client.BetLimits;
+import com.devillsroom.poker.player.Game;
+import com.devillsroom.poker.player.Strategy;
 
 public class OriginalStrategy extends Strategy {
     @Override

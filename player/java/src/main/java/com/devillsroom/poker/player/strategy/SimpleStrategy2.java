@@ -1,8 +1,10 @@
-package com.devillsroom.poker.player;
+package com.devillsroom.poker.player.strategy;
 
 import com.devillsroom.poker.client.BetLimits;
+import com.devillsroom.poker.player.Game;
+import com.devillsroom.poker.player.Strategy;
 
-public class SimpleStrategy extends Strategy {
+public class SimpleStrategy2 extends Strategy {
 
     @Override
     public long doBet(BetLimits limits, Game game) {

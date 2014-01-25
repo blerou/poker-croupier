@@ -1,6 +1,7 @@
 package com.devillsroom.poker.player;
 
 import com.devillsroom.poker.client.PlayerStrategy;
+import com.devillsroom.poker.player.strategy.SimpleStrategy;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TSimpleServer;
 import org.apache.thrift.transport.TServerSocket;

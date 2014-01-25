@@ -33,7 +33,7 @@ public class Hand {
     public boolean hasTwoHighCardOutOfTwoCard() {
         int[] values = evaluateValues();
 
-        for (int pos = 0; pos < 10; pos++) {
+        for (int pos = 2; pos < 10; pos++) {
             if (values[pos] > 0) {
                 return false;
             }
@@ -61,8 +61,8 @@ public class Hand {
 
         int pairCount = 0;
 
-        for (int i : values) {
-            if (i > 1) {
+        for (int i = 2; i < values.length; i++) {
+            if (values[i] > 1) {
                 pairCount ++;
             }
         }
@@ -84,12 +84,12 @@ public class Hand {
 
 
         int pairCount = 0;
-        for (int i : values) {
-            if (i > 2) {
+        for (int i = 2; i < values.length; i++) {
+            if (values[i] > 2) {
                 return true;
             }
 
-            if (i == 2) {
+            if (values[i] == 2) {
                 pairCount ++;
             }
         }

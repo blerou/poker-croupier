@@ -1,5 +1,7 @@
 package com.devillsroom.poker.player;
 
+import com.devillsroom.poker.player.strategy.OriginalStrategy;
+import com.devillsroom.poker.player.strategy.SimpleStrategy;
 import org.junit.Test;
 
 import java.io.IOException;
