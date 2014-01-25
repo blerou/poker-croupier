@@ -2,8 +2,6 @@ package com.devillsroom.poker.player;
 
 
 import com.devillsroom.poker.client.Card;
-import com.devillsroom.poker.client.HandDescriptor;
-import org.apache.thrift.TException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -95,12 +93,6 @@ public class Hand {
                 pairCount ++;
             }
         }
-
-        if (pairCount > 1) {
-            return true;
-        }
-
-        return false;
-
+        return pairCount > 1;
     }
 }

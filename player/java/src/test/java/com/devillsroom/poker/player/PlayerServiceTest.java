@@ -9,8 +9,8 @@ public class PlayerServiceTest {
     @Test
     public void testStart2Players() throws InterruptedException, IOException {
 
-        startPlayerThread("Java Player 1", 9200, new SimpleStrategy());
-        startPlayerThread("Java Player 2", 9201, new SimpleStrategy());
+        startPlayerThread("NU Player", 9200, new SimpleStrategy());
+        startPlayerThread("old Player", 9201, new OriginalStrategy());
 
         System.out.println(execCmd("bundle exec ruby ../../croupier/scripts/integration_test_external_players.rb"));
         //execCmd("bundle exec ruby ../../croupier/scripts/integration_test_external_players.rb");
