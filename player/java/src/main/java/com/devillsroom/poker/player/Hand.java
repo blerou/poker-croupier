@@ -15,19 +15,14 @@ public class Hand {
     }
 
     private int[] evaluateValues () {
-
         int[] values = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-
         for (Card card : cards) {
             values[card.getValue()]++;
-
             if (cardIsAce(card)) {
                 values[1]++;
             }
         }
-
         return values;
-
     }
 
     public boolean hasTwoHighCardOutOfTwoCard() {
@@ -79,10 +74,7 @@ public class Hand {
     }
 
     public boolean hasAtLeastDrill() {
-
         int[] values = evaluateValues();
-
-
         int pairCount = 0;
         for (int i = 2; i < values.length; i++) {
             if (values[i] > 2) {
@@ -94,5 +86,23 @@ public class Hand {
             }
         }
         return pairCount > 1;
+    }
+
+    public boolean hasFlush() {
+        int[] suits = evaluateSuites();
+        for (int suitCnt : suits) {
+            if (suitCnt == 5) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int[] evaluateSuites() {
+        int[] suites = {0, 0, 0, 0, 0};
+        for (Card card : cards) {
+            suites[card.getSuit().getValue()]++;
+        }
+        return suites;
     }
 }

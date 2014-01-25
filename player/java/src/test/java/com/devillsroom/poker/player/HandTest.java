@@ -37,4 +37,24 @@ public class HandTest {
 
         assertTrue(hand.hasExactlyOnePair());
     }
+
+    @Test
+    public void hasFlush() {
+        Hand hand = new Hand();
+        hand.addCard(new Card((short) 2, Suit.Clubs, ""));
+
+        assertFalse("One card never make a flush.", hand.hasFlush());
+
+        hand.addCard(new Card((short) 2, Suit.Diamonds, ""));
+        hand.addCard(new Card((short) 2, Suit.Spades, ""));
+        hand.addCard(new Card((short) 2, Suit.Hearts, ""));
+        hand.addCard(new Card((short) 3, Suit.Hearts, ""));
+        assertFalse("Different suites never make a flush", hand.hasFlush());
+
+        hand.addCard(new Card((short) 3, Suit.Clubs, ""));
+        hand.addCard(new Card((short) 4, Suit.Clubs, ""));
+        hand.addCard(new Card((short) 5, Suit.Clubs, ""));
+        hand.addCard(new Card((short) 6, Suit.Clubs, ""));
+        assertTrue("5 of a suite make a flush", hand.hasFlush());
+    }
 }
