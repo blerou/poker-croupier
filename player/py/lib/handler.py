@@ -16,18 +16,19 @@ class PlayerHandler(object):
     self.rais = 0
 
   def name(self):
-    return os.environ['USER'] + '_' + sys.argv[1]
+    return os.environ['USER']
 
   def competitor_status(self, competitor):
-    if len(self.my_cards) == 0 and competitor.name == self.name():
-      self.money += competitor.stack
+    print "competitor_status", competitor
+    pass
 
   def hole_card(self, card):
     self.my_cards.append(card)
     self.twocards.card(card)
 
   def community_card(self, card):
-    self.community_cards.append(card)
+    print "community_card", card
+    pass
 
   def bet(self, competitor, bet):
     self.bet_log.bet(bet)
@@ -55,32 +56,13 @@ class PlayerHandler(object):
       else:
         return 0
 
-    if self.__state__() == 5:
-      if self.__eval__() > 30:
-        return limits.to_call
-      else:
-        return limits.to_call
-
-    if self.__state__() == 6:
-      if self.__eval__() > 35:
-        return limits.to_call
-      else:
-        return limits.to_call
-
-    if self.__state__() == 7:
-      if self.__eval__() > 40:
-        return limits.to_call
-      else:
-        return limits.to_call
-
-    return 0
-
   def showdown(self, comptetior, cards, hand):
     print "showdown", comptetior, cards, hand
     pass
 
   def winner(self, competitor, amount):
-    self.__reset__()
+    print "winner", competitor, amount
+    pass
 
   def shutdown(self):
       sys.exit('Shutting down server')
