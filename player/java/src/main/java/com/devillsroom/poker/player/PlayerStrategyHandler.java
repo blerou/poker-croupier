@@ -75,7 +75,7 @@ public class PlayerStrategyHandler implements PlayerStrategy.Iface {
 
     @Override
     public void winner(Competitor competitor, long amount) throws TException {
-        logger.debug(name + " winner");
+        logger.debug(name + " winner :" + competitor.getName());
 
     }
 

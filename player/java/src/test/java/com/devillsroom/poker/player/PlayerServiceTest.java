@@ -3,6 +3,7 @@ package com.devillsroom.poker.player;
 import com.devillsroom.poker.player.strategy.OriginalStrategy;
 import com.devillsroom.poker.player.strategy.SimpleStrategy;
 import com.devillsroom.poker.player.strategy.SimpleStrategy2;
+import com.devillsroom.poker.player.strategy.SimpleStrategy3;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -12,8 +13,8 @@ public class PlayerServiceTest {
     @Test
     public void testStart2Players() throws InterruptedException, IOException {
 
-        startPlayerThread("1 Player", 9200, new SimpleStrategy());
-        startPlayerThread("2 Player", 9201, new SimpleStrategy2());
+        startPlayerThread("1 Player", 9200, new SimpleStrategy2());
+        startPlayerThread("2 Player", 9201, new SimpleStrategy3());
 
         System.out.println(execCmd("bundle exec ruby ../../croupier/scripts/integration_test_external_players.rb"));
         //execCmd("bundle exec ruby ../../croupier/scripts/integration_test_external_players.rb");
