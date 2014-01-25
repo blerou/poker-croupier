@@ -48,7 +48,7 @@ public class PlayerStrategyHandler implements PlayerStrategy.Iface {
     public void hole_card(com.devillsroom.poker.client.Card card) throws TException {
         logger.debug(name + " hole_card Name : " + card.getName() + " Suite : " + card.getSuit() );
 
-        p.addCard(card.getSuit().getValue(), card.getValue());
+        p.addCard(card.getSuit().getValue(), (int)card.getValue());
     }
 
     @Override

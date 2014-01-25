@@ -15,7 +15,7 @@ public class RaiseOnPairOrCheckPlayer implements Player {
     }
 
     public boolean hasPair() {
-        int[] a = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        int[] a = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         for (Card c : hand) {
             if (a[c.value] == 1)
                 return true;
@@ -25,7 +25,7 @@ public class RaiseOnPairOrCheckPlayer implements Player {
     }
 
     @Override
-    public void addCard(int suite, short value) {
+    public void addCard(int suite, int value) {
         hand.add(new Card(suite, value));
     }
 }

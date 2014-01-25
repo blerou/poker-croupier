@@ -7,7 +7,7 @@ public class DummyPlayer implements Player {
     }
 
     @Override
-    public void addCard(int suite, short value) {
+    public void addCard(int suite, int value) {
 
     }
 }
