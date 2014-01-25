@@ -24,49 +24,49 @@ public class PlayerStrategyHandler implements PlayerStrategy.Iface {
 
     @Override
     public long bet_request(long pot, BetLimits limits) throws TException {
-        logger.debug("bet_request");
+        logger.debug(name + " bet_request pot : " + pot + " minimum raise: " + limits.getMinimum_raise() + " to call : " + limits.getTo_call());
 
         return 0;
     }
 
     @Override
     public void competitor_status(Competitor competitor) throws TException {
-        logger.debug("competitor_status");
+        logger.debug(name + " competitor_status Name : " + competitor.name + " Stack " + competitor.getStack());
     }
 
     @Override
     public void bet(Competitor competitor, Bet bet) throws TException {
-        logger.debug("bet");
+        logger.debug(name + " bet Competitor : " + competitor.getName() + " bet:" + bet.getAmount());
 
     }
 
     @Override
     public void hole_card(Card card) throws TException {
-        logger.debug("hole_card");
+        logger.debug(name + " hole_card Name : " + card.getName() + " Suite : " + card.getSuit() );
 
     }
 
     @Override
     public void community_card(Card card) throws TException {
-        logger.debug("community_card");
+        logger.debug(name + " community_card Name : " + card.getName() + " Suite : " + card.getSuit());
 
     }
 
     @Override
     public void showdown(Competitor competitor, List<Card> cards, HandDescriptor hand) throws TException {
-        logger.debug("showdown");
+        logger.debug(name + " showdown");
 
     }
 
     @Override
     public void winner(Competitor competitor, long amount) throws TException {
-        logger.debug("winner");
+        logger.debug(name + " winner");
 
     }
 
     @Override
     public void shutdown() throws TException {
-        logger.debug("shutdown");
+        logger.debug(name + " shutdown");
 
     }
 }
