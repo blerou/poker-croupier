@@ -20,7 +20,7 @@ def start_server(log_file)
   end
   Process.detach(croupier)
 
-  sleep(1)
+  sleep(5)
 end
 
 def sit_and_go(log_file, &block)
