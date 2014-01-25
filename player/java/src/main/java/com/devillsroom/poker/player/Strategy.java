@@ -7,12 +7,17 @@ public abstract class Strategy {
     public abstract long doBet(BetLimits limits, Game game);
 
 
-    public long doCallOrFold(BetLimits limits) {
+    protected long doCall(BetLimits limits) {
         return limits.getTo_call();
     }
 
-    public long doRaise(BetLimits limits) {
+    protected long doRaise(BetLimits limits) {
         return limits.getTo_call() + limits.getMinimum_raise();
     }
+
+    protected long doCheckOfFold() {
+        return 0;
+    }
+
 
 }

@@ -4,15 +4,17 @@ import com.devillsroom.poker.client.BetLimits;
 
 public class SimpleStrategy extends Strategy {
 
-    private RankingClient rankingClient;
-
     @Override
     public long doBet(BetLimits limits, Game game) {
 
         if (game.isPreFlop()) {
+
             return doPreFlopBet(limits, game);
+
         } else {
+
             return doPostFlopBet(limits, game);
+
         }
 
     }
@@ -23,10 +25,10 @@ public class SimpleStrategy extends Strategy {
             return doRaise(limits);
 
         } else if (game.getHand().hasExactlyOnePair()) {
-            return doCallOrFold(limits);
+            return doCall(limits);
 
         } else {
-            return 0;
+            return doCheckOfFold();
 
         }
 
@@ -34,12 +36,12 @@ public class SimpleStrategy extends Strategy {
 
     private long doPreFlopBet(BetLimits limits, Game game) {
 
-        if (game.getHand().hasAtLeastPair() || game.getHand().hasTwoHighCard()) {
+        if (game.getHand().hasAtLeastPair() || game.getHand().hasTwoHighCardOutOfTwoCard()) {
             return doRaise(limits);
 
         } else {
 
-            return 0;
+            return doCheckOfFold();
 
         }
 

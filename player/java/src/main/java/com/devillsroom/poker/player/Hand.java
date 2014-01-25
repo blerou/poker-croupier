@@ -32,11 +32,11 @@ public class Hand {
 
     }
 
-    public boolean hasTwoHighCard() {
+    public boolean hasTwoHighCardOutOfTwoCard() {
         int[] values = evaluateValues();
 
-        for (int pos = 0; pos < values.length; pos++) {
-            if (pos < 10 && values[pos] > 0) {
+        for (int pos = 0; pos < 10; pos++) {
+            if (values[pos] > 0) {
                 return false;
             }
         }
