@@ -2,6 +2,7 @@ package com.devillsroom.poker.player;
 
 import com.devillsroom.poker.client.PlayerStrategy;
 import com.devillsroom.poker.player.strategy.SimpleStrategy;
+import com.devillsroom.poker.player.strategy.SimpleStrategy3;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TSimpleServer;
 import org.apache.thrift.transport.TServerSocket;
@@ -23,7 +24,7 @@ public class PlayerService implements Runnable {
 
     public static void main(String[] args) {
 
-        new PlayerService("Jim Java", 9900, new SimpleStrategy()).run();
+        new PlayerService("Jim Java", 9900, new SimpleStrategy3()).run();
 
     }
 
