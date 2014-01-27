@@ -7,7 +7,8 @@
     <link rel="stylesheet" type="text/css" media="screen" href="css/master.css" />
 
     <script src="js/lib/jquery/jquery-2.0.3.js"></script>
-    <script>history = <?php readfile("../log/{$_GET['file']}.json"); ?></script>
+    <script src="js/lib/underscore-1.5.1.js"></script>
+    <script>window.pokerEvents = <?php readfile("../log/{$_GET['file']}.json"); ?></script>
     <script src="js/lib/main.js"></script>
 </head>
 <body>

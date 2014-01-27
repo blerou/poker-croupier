@@ -19,5 +19,6 @@ node_modules/*
 .yardoc
 _yardoc
 doc/
+nbproject/
 *.pyc
 .vagrant
