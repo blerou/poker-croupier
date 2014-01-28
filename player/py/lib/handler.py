@@ -1,7 +1,11 @@
 import sys
 import os
 
+
 sys.path.append(os.path.abspath('lib'))
+
+from api.strategy import Evaluator
+
 
 from api.ThriftTypes.ttypes import BetType
 
@@ -12,10 +16,11 @@ class PlayerHandler(object):
   def __init__(self):
     self.__reset__()
     self.money = 1000
+    self.rais = 0
     self.bet_log = BetLog()
 
   def name(self):
-    return os.environ['USER']
+    return os.environ['USER'] + '_' + sys.argv[1]
 
   def competitor_status(self, competitor):
     if len(self.my_cards) == 0 and competitor.name == self.name():
@@ -38,33 +43,43 @@ class PlayerHandler(object):
         niceness = self.twocards.evaluate()
 
         if niceness > 9:
-            return max(0, self.money - 10)
+            return max(0, self.money)
 
         if niceness == 3:
-            return limits.minimum_raise
+            return limits.minimum_raise + limits.to_call
         if niceness == 0:
             return 0
 
         return limits.to_call
 
-    try:
-        return self.bet_log.bet_request(limits)
-    except Exception as e:
-        return 0
-
     if self.__state__() == 2:
-      if self.__eval__() > 20:
+      if self.__eval__() > 20 or self._get_deal() > Evaluator.NOTHING:
         return limits.to_call * 2
       else:
         return 0
 
     if self.__state__() == 5:
-      if self.__eval__() > 30:
+      if self.__eval__() > 30 or self._get_deal() > Evaluator.NOTHING:
         return limits.to_call
       else:
-        return 0
+        return limits.to_call
 
-    return limits.to_call;
+    if self.__state__() == 6:
+      if self.__eval__() > 35 or self._get_deal() > Evaluator.NOTHING:
+        return limits.to_call
+      else:
+        return limits.to_call
+
+    if self.__state__() == 7:
+      if self.__eval__() > 40 or self._get_deal() > Evaluator.NOTHING:
+        return limits.to_call
+      else:
+        return limits.to_call
+
+    return 0
+
+  def _get_deal(self):
+    return Evaluator().evaluate(self.my_cards + self.community_cards)
 
   def showdown(self, comptetior, cards, hand):
     pass
@@ -92,10 +107,11 @@ class PlayerHandler(object):
 
   def __eval__(self):
     value = self.__eval_hand__()
-    if self.community_cards[0].value == self.community_cards[1].value:
-      value += self.community_cards[0].value * 2
-    if self.community_cards[1].value == self.community_cards[2].value:
-      value += self.community_cards[1].value * 2
-    if self.community_cards[0].value == self.community_cards[2].value:
-      value += self.community_cards[0].value * 2
+    if self.__state__() > 2:
+      if self.community_cards[0].value == self.community_cards[1].value:
+        value += self.community_cards[0].value * 2
+      if self.community_cards[1].value == self.community_cards[2].value:
+        value += self.community_cards[1].value * 2
+      if self.community_cards[0].value == self.community_cards[2].value:
+        value += self.community_cards[0].value * 2
     return value
