@@ -3,6 +3,7 @@ class Croupier::Game::Steps::Betting::Player
   def initialize(betting_state, index)
     @betting_state = betting_state
     @player = betting_state.players[index]
+    @index = index
   end
 
   def take_turn
@@ -10,7 +11,7 @@ class Croupier::Game::Steps::Betting::Player
       return
     end
 
-    bet = @player.bet_request @betting_state.game_state.pot, to_call: to_call, minimum_raise: @betting_state.minimum_raise
+    bet = @player.bet_request betting_state_for_player
 
     if allin_bet? bet
       handle_allin
@@ -22,6 +23,14 @@ class Croupier::Game::Steps::Betting::Player
       handle_check
     else
       handle_fold
+    end
+  end
+
+  def betting_state_for_player
+    @betting_state.data.tap do |data|
+      data[:players].each_with_index do |player, index|
+        player.delete(:hole_cards) unless index == @index
+      end
     end
   end
 
@@ -38,7 +47,6 @@ class Croupier::Game::Steps::Betting::Player
   end
 
   private
-
 
   def allin_bet?(bet)
     bet > 0 && bet >= @player.stack

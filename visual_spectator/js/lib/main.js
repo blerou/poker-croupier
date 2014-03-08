@@ -57,22 +57,22 @@ $(document).ready(function() {
     function render(index) {
         var event = window.pokerEvents[index];
 
-        $("#pot-amount").text(event.pot);
+        $("#pot-amount").text(event.game_state.pot);
         $('#community-cards div.card').each(function (index, dom_card) {
-            refreshCard(event.community_cards[index], dom_card);
+            refreshCard(event.game_state.community_cards[index], dom_card);
         });
         $('#playerContainer').empty();
-        event.players.forEach(function (player) {
+        event.game_state.players.forEach(function (player) {
             addPlayer('#playerContainer', player);
         });
 
-        $('#player'+event['dealer']).addClass('dealer');
-        $('#player'+event['on_turn']).addClass('on-turn');
+        $('#player'+event.game_state.dealer).addClass('dealer');
+        $('#player'+event.on_turn).addClass('on-turn');
 
         $('#message').text(event.message);
     }
 
-    $.ajax('template/player.html').done(function(data) {
+    $.ajax('template/player.mustache').done(function(data) {
         player_template = _.template(data);
 
         var currentIndex = 0;
@@ -89,13 +89,13 @@ $(document).ready(function() {
 
             function startPlay() {
                 timerHandle = setInterval(next, 1200);
-                $('#play-button').text('Stop');
+                $('#play-button').removeClass('play-button').addClass('stop-button');
             }
 
             function stopPlay() {
                 clearInterval(timerHandle);
                 timerHandle = false;
-                $('#play-button').text('Play');
+                $('#play-button').removeClass('stop-button').addClass('play-button');
             }
 
             function togglePlay() {

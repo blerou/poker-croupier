@@ -1,6 +1,7 @@
 
 require 'card'
-require 'ranking/hand'
+
+require 'poker_ranking'
 
 class Croupier::Game::Steps::Showdown < Croupier::Game::Steps::Base
   def run
@@ -9,17 +10,24 @@ class Croupier::Game::Steps::Showdown < Croupier::Game::Steps::Base
       break if @winners == []
       award
     end
+    game_state.players.each do |player|
+      data = game_state.data
+      data[:players].each do |opponent|
+        opponent.delete :hole_cards unless game_state.players[opponent[:id]] == player or game_state.players[opponent[:id]].hand_revealed
+      end
+      player.showdown(data)
+    end
   end
 
   private
 
   def find_winner
     @winners = []
-    @best_hand = Ranking::Hand.new
+    @best_hand = PokerRanking::Hand.new([])
 
     if game_state.players.count { |player| player.active? and player.total_bet > 0 } == 1
       @winners = game_state.players.select { |player| player.active? and player.total_bet > 0 }
-      @best_hand = Ranking::Hand.new *@winners[0].hole_cards, *game_state.community_cards
+      @best_hand = PokerRanking::Hand.new [*@winners[0].hole_cards, *game_state.community_cards]
     else
       game_state.each_player_from game_state.last_aggressor do |player|
         examine_cards_of player
@@ -31,12 +39,10 @@ class Croupier::Game::Steps::Showdown < Croupier::Game::Steps::Base
     return unless player.active?
     return if player.total_bet <= 0
 
-    hand = Ranking::Hand.new *player.hole_cards, *game_state.community_cards
+    hand = PokerRanking::Hand.new [*player.hole_cards, *game_state.community_cards]
     return if @best_hand.defeats? hand
 
-    game_state.each_observer do |observer|
-      observer.showdown player, hand
-    end
+    show_hand(player, hand)
 
     @winners = [] if hand.defeats? @best_hand
 
@@ -49,14 +55,8 @@ class Croupier::Game::Steps::Showdown < Croupier::Game::Steps::Base
     remainder = side_pot % @winners.length
     @winners.each_with_index do |winner, index|
       amount = (side_pot / @winners.length).floor - (index < remainder ? 1 : 0)
-      game_state.transfer winner, -amount
-      announce winner, amount
-    end
-  end
-
-  def announce(winner, amount)
-    game_state.each_observer do |observer|
-      observer.winner winner, amount
+      game_state.transfer_amount_won winner, amount
+      log_winner winner, amount
     end
   end
 
@@ -71,9 +71,18 @@ class Croupier::Game::Steps::Showdown < Croupier::Game::Steps::Base
     pot
   end
 
-
-
   def calculate_side_pot_size
     @winners.map { |player| player.total_bet }.min
   end
+
+
+  def show_hand(player, hand)
+    game_state.log_state message: "#{player.name} showed #{hand.cards.map{|card| card}.join(',')} making a #{hand.name}"
+    player.hand_revealed = true
+  end
+
+  def log_winner(winner, amount)
+    game_state.log_state message: "#{winner.name} won #{amount}"
+  end
+
 end

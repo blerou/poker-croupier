@@ -2,12 +2,10 @@ $:.push(File.join(File.dirname(__FILE__), '../../common/lib'))
 $:.push(File.join(File.dirname(__FILE__)))
 
 require_relative '../croupier'
-require_relative '../../croupier/lib/api/types_types'
 
 module SpecHelper
   autoload :DummyClass, 'spec_helper/dummy_class'
   autoload :FakeStrategy, 'spec_helper/fake_strategy'
-  autoload :FakeSpectator, 'spec_helper/fake_spectator'
   autoload :MakeTournamentState, 'spec_helper/make_tournament_state'
 end
 

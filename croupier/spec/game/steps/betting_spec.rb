@@ -3,22 +3,23 @@ require_relative '../../spec_helper'
 
 describe Croupier::Game::Steps::Betting::Step do
   before :each do
-    @spectator = SpecHelper::FakeSpectator.new
-    @player_on_button = Croupier::Player.new SpecHelper::FakeStrategy.new
+    @player_on_button = Croupier::Player.new fake_player
 
-    @game_state = Croupier::Game::State.new(SpecHelper::MakeTournamentState.with players: [@player_on_button], spectators: [@spectator])
+    @game_state = Croupier::Game::State.new(SpecHelper::MakeTournamentState.with players: [@player_on_button])
 
     @mocked_pot = 0
   end
 
-  def should_bet(player, amount, type)
-    should_try_bet player, amount, amount, type
+  def should_bet(player, amount, type, expected_stack = nil)
+    should_try_bet player, amount, amount, type, expected_stack
   end
 
-  def should_try_bet(player, requested_amount, actual_amount, type)
+  def should_try_bet(player, requested_amount, actual_amount, type, expected_stack = nil)
+    expected_stack = player.stack - actual_amount if expected_stack.nil?
     @mocked_pot += actual_amount
     player.should_receive(:bet_request).and_return(requested_amount)
-    @spectator.should_receive(:bet).with(player, amount: actual_amount, type: type, pot: @mocked_pot)
+    index = @game_state.players.index(player)
+    @game_state.should_receive(:log_state).with(on_turn: index, message: "#{player.name} made a bet of #{actual_amount} (#{type}) and is left with #{expected_stack} chips. The pot now contains #{@mocked_pot} chips.")
   end
 
   def run()
@@ -28,7 +29,7 @@ describe Croupier::Game::Steps::Betting::Step do
   context "at least two players" do
 
     before :each do
-      @first_player = Croupier::Player.new SpecHelper::FakeStrategy.new
+      @first_player = Croupier::Player.new fake_player
       @game_state.register_player @first_player
     end
 
@@ -82,7 +83,7 @@ describe Croupier::Game::Steps::Betting::Step do
     it "should ask the first player again if the second raises" do
       should_bet @first_player, 20, :raise
       should_bet @player_on_button, 40, :raise
-      should_bet @first_player, 20, :call
+      should_bet @first_player, 20, :call, 960
       run
       @game_state.pot.should == 80
       @player_on_button.stack.should == 960
@@ -164,26 +165,26 @@ describe Croupier::Game::Steps::Betting::Step do
     end
 
     it "should skip inactive players" do
-      @second_player = Croupier::Player.new SpecHelper::FakeStrategy.new
+      @second_player = Croupier::Player.new fake_player
       @game_state.register_player @second_player
 
       should_bet @first_player, 20, :raise
       should_bet @second_player, 0, :fold
       should_bet @player_on_button, 40, :raise
-      should_bet @first_player, 20, :call
+      should_bet @first_player, 20, :call, 960
       run
     end
 
     it "should skip all-in players" do
-      @second_player = Croupier::Player.new SpecHelper::FakeStrategy.new
+      @second_player = Croupier::Player.new fake_player
       @second_player.stack = 10
       @game_state.register_player @second_player
 
       should_bet @first_player, 20, :raise
       should_bet @second_player, 10, :allin
       should_bet @player_on_button, 40, :raise
-      should_bet @first_player, 40, :raise
-      should_bet @player_on_button, 20, :call
+      should_bet @first_player, 40, :raise, 940
+      should_bet @player_on_button, 20, :call, 940
       run
     end
 
@@ -219,20 +220,6 @@ describe Croupier::Game::Steps::Betting::Step do
     end
 
 
-    it "should report an empty pot with nothing to call and the big blind as minimum raise" do
-      @first_player.should_receive(:bet_request).with(0, {:to_call=>0, :minimum_raise=>20}).and_return(0)
-      @player_on_button.should_receive(:bet_request).with(0, {:to_call=>0, :minimum_raise=>20}).and_return(0)
-
-      run
-    end
-
-    it "should report a non empty pot and suitable limits if a player already bet" do
-      @first_player.should_receive(:bet_request).with(0, {:to_call=>0, :minimum_raise=>20}).and_return(20)
-      @player_on_button.should_receive(:bet_request).with(20, {:to_call=>20, :minimum_raise=>20}).and_return(60)
-      @first_player.should_receive(:bet_request).with(80, {:to_call=>40, :minimum_raise=>40}).and_return(20)
-
-      run
-    end
 
     it "should start with the first_player even after the button has moved" do
       @game_state.next_round!

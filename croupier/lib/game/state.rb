@@ -11,7 +11,7 @@ class Croupier::Game::State
   end
 
   def current_buy_in
-    players.inject(0) { |max_buy_in, player| max_buy_in = [max_buy_in, player.total_bet].max }
+    players.map{ |player| player.total_bet}.max
   end
 
   def pot
@@ -23,10 +23,8 @@ class Croupier::Game::State
     player.total_bet += amount
     @last_aggressor = player if current_buy_in > original_buy_in
 
-    transfer player, amount
-    each_observer do |observer|
-      observer.bet player, amount: amount, type: bet_type, pot: pot
-    end
+    player.stack -= amount
+    log_state on_turn: players.index(player), message: "#{player.name} made a bet of #{amount} (#{bet_type}) and is left with #{player.stack} chips. The pot now contains #{pot} chips."
   end
 
   def last_aggressor
@@ -39,7 +37,20 @@ class Croupier::Game::State
     @last_aggressor = nil
   end
 
-  def transfer(player, amount)
-    player.stack -= amount
+  def transfer_amount_won(player, amount)
+    player.stack += amount
+    player.amount_won += amount
+  end
+
+  def data
+    @tournament_state.data.merge({
+      community_cards: @community_cards.map { |card| card.data },
+      current_buy_in: current_buy_in,
+      pot: pot
+    })
+  end
+
+  def log_state(additional_data = {})
+    logger.log_state(additional_data.merge game_state: data)
   end
 end

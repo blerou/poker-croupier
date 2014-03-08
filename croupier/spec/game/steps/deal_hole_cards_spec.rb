@@ -3,11 +3,13 @@ require 'card'
 
 describe Croupier::Game::Steps::DealHoleCards do
   let(:game_state) { SpecHelper::MakeTournamentState.with players: [fake_player, fake_player] }
-  let(:cards) { ['6 of Diamonds', 'Jack of Hearts', 'Ace of Spades', 'King of Clubs'].map { |name| Card.new name } }
+  let(:cards) { ['6 of Diamonds', 'Jack of Hearts', 'Ace of Spades', 'King of Clubs'].map { |name| PokerRanking::Card::by_name name } }
 
   before :each do
     deck = double("Deck")
     deck.stub(:next_card!).and_return(*cards)
+
+    game_state.should_receive(:log_state).exactly(5).times
 
     Croupier::Deck.stub(:new).and_return(deck)
   end

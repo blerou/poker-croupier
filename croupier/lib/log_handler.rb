@@ -1,7 +1,6 @@
 
 module Croupier::LogHandler
-  autoload :HumanReadable, 'lib/log_handler/human_readable'
   autoload :Json, 'lib/log_handler/json'
-  autoload :Messages, 'lib/log_handler/messages'
+  autoload :NilLogger, 'lib/log_handler/nil_logger'
   autoload :MultiLogger, 'lib/log_handler/multi_logger'
 end
